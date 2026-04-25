@@ -1,0 +1,99 @@
+{
+  "menu": {
+    "dashboard": "Tableau de Bord",
+    "candidates": "Candidats",
+    "planning": "Planning",
+    "payments": "Paiements",
+    "exams": "Examens",
+    "instructors": "Moniteurs",
+    "vehicles": "Véhicules",
+    "expenses": "Dépenses",
+    "staff": "Personnel",
+    "settings": "Paramètres",
+    "candidate_home": "Accueil",
+    "tracking": "Mon Suivi",
+    "sessions": "Mes Séances",
+    "documents": "Documents",
+    "resources": "Cours & Support",
+    "profile": "Mon Profil",
+    "reports": "Rapports Séances",
+    "my_students": "Mes Élèves",
+    "logout": "DÉCONNEXION"
+  },
+  "instructor": {
+    "profile": "Mon Profil",
+    "stats_title": "Statistiques personnelles",
+    "total_sessions": "Total séances",
+    "students_trained": "Élèves formés",
+    "success_rate": "Taux réussite",
+    "hours_month": "Heures ce mois",
+    "active_students": "Élèves actifs",
+    "change_password": "Changer le mot de passe",
+    "current_password": "MOT DE PASSE ACTUEL",
+    "new_password": "NOUVEAU",
+    "confirm_password": "CONFIRMER",
+    "save": "Enregistrer",
+    "loading_error": "Erreur de chargement."
+  },
+  "instructor_dashboard": {
+    "welcome": "Bonjour",
+    "subtitle": "Consultez votre planning et vos élèves pour aujourd'hui.",
+    "active_duty": "En Service",
+    "planning_today": "Planning du Jour",
+    "see_calendar": "Voir calendrier",
+    "no_sessions": "Aucune séance prévue pour aujourd'hui.",
+    "activity_feed": "Fil d'activité",
+    "total_day": "Total ce jour",
+    "hours_worked": "h travaillées"
+  },
+  "settings": {
+    "title": "Paramètres du Système",
+    "subtitle": "Gérez les informations, la tarification et la configuration de votre auto-école.",
+    "save": "ENREGISTRER",
+    "success": "Paramètres enregistrés avec succès !"
+  },
+  "documents": {
+    "title": "Documents",
+    "download": "Télécharger",
+    "validated": "Validé",
+    "pending": "En attente",
+    "reminder_title": "Rappel dossier",
+    "reminder_text1": "Votre dossier administratif est actuellement",
+    "reminder_status": "Complet",
+    "reminder_text2": ". Toutes les pièces requises ont été validées par notre secrétariat."
+  },
+  "sessions": {
+    "title": "Mon Planning",
+    "subtitle": "/ Séances & Historique",
+    "download": "Télécharger mon planning (PDF)",
+    "upcoming": "Séances à venir",
+    "planned_count": "séance(s) prévue(s)",
+    "training_time": "Horaire de formation",
+    "your_instructor": "Votre moniteur",
+    "assigned_vehicle": "Véhicule affecté",
+    "driving_session": "🚗 Session Conduite",
+    "code_session": "📖 Session Code",
+    "no_upcoming": "Aucune séance n'est programmée pour le moment.",
+    "history": "Historique des séances passées",
+    "date_time": "Date & Heure",
+    "type": "Type",
+    "instructor": "Moniteur",
+    "status": "Statut",
+    "no_history": "Aucun historique de session."
+  },
+  "resources": {
+    "title": "Espace de Révision",
+    "subtitle": "/ Vidéos, PDF & Examens",
+    "videos": "Vidéos de Formation",
+    "documents": "Cours & Signaux (PDF)",
+    "exams": "Examens Blancs",
+    "watch": "Regarder",
+    "download": "Télécharger PDF",
+    "start": "Commencer"
+  },
+  "status": {
+    "scheduled": "PRÉVU",
+    "completed": "TERMINÉ",
+    "cancelled": "ANNULÉ"
+  }
+}

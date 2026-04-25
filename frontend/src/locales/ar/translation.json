@@ -1,0 +1,99 @@
+{
+  "menu": {
+    "dashboard": "لوحة القيادة",
+    "candidates": "المرشحون",
+    "planning": "المواعيد والتخطيط",
+    "payments": "الأداءات",
+    "exams": "الامتحانات",
+    "instructors": "المدربون",
+    "vehicles": "المركبات",
+    "expenses": "المصاريف",
+    "staff": "الموظفون",
+    "settings": "الإعدادات",
+    "candidate_home": "الرئيسية",
+    "tracking": "تتبعي",
+    "sessions": "حصصي",
+    "documents": "وثائقي",
+    "resources": "حصص الدعم",
+    "profile": "حسابي",
+    "reports": "تقارير الحصص",
+    "my_students": "تلاميذي",
+    "logout": "تسجيل الخروج"
+  },
+  "instructor": {
+    "profile": "حسابي",
+    "stats_title": "إحصائيات شخصية",
+    "total_sessions": "مجموع الحصص",
+    "students_trained": "تلاميذ مكونون",
+    "success_rate": "نسبة النجاح",
+    "hours_month": "ساعات هذا الشهر",
+    "active_students": "تلاميذ نشطون",
+    "change_password": "تغيير كلمة المرور",
+    "current_password": "كلمة المرور الحالية",
+    "new_password": "الجديدة",
+    "confirm_password": "تأكيد",
+    "save": "حفظ",
+    "loading_error": "خطأ في التحميل."
+  },
+  "instructor_dashboard": {
+    "welcome": "مرحباً",
+    "subtitle": "اطلع على جدول حصصك وتلاميذك اليوم.",
+    "active_duty": "في الخدمة",
+    "planning_today": "جدول اليوم",
+    "see_calendar": "عرض التقويم",
+    "no_sessions": "لا توجد حصص مبرمجة لليوم.",
+    "activity_feed": "آخر النشاطات",
+    "total_day": "مجموع اليوم",
+    "hours_worked": "ساعات العمل"
+  },
+  "settings": {
+    "title": "إعدادات النظام",
+    "subtitle": "إدارة معلومات المؤسسة، التسعيرة، وإعدادات مدرسة التعليم الخاصة بك.",
+    "save": "حفظ",
+    "success": "تم حفظ الإعدادات بنجاح !"
+  },
+  "documents": {
+    "title": "وثائقي",
+    "download": "تحميل",
+    "validated": "مقبول",
+    "pending": "في الانتظار",
+    "reminder_title": "تذكير بالملف",
+    "reminder_text1": "ملفك الإداري حاليا",
+    "reminder_status": "مكتمل",
+    "reminder_text2": ". تمت المصادقة على جميع الوثائق المطلوبة من طرف الإدارة."
+  },
+  "sessions": {
+    "title": "جدول الحصص",
+    "subtitle": "/ المواعيد والتاريخ",
+    "download": "تحميل جدولي (PDF)",
+    "upcoming": "الحصص القادمة",
+    "planned_count": "حصة (حصص) مبرمجة",
+    "training_time": "توقيت التدريب",
+    "your_instructor": "مدربك",
+    "assigned_vehicle": "المركبة المخصصة",
+    "driving_session": "🚗 حصة سياقة",
+    "code_session": "📖 حصة كود",
+    "no_upcoming": "لا توجد حصص مبرمجة في الوقت الحالي.",
+    "history": "تاريخ الحصص السابقة",
+    "date_time": "التاريخ والتوقيت",
+    "type": "النوع",
+    "instructor": "المدرب",
+    "status": "الحالة",
+    "no_history": "لا يوجد تاريخ للحصص السابقة."
+  },
+  "resources": {
+    "title": "فضاء المراجعة",
+    "subtitle": "/ فيديوهات، دروس وامتحانات",
+    "videos": "فيديوهات تعليمية",
+    "documents": "دروس وقواعد (PDF)",
+    "exams": "امتحانات تجريبية",
+    "watch": "مشاهدة",
+    "download": "تحميل PDF",
+    "start": "ابدأ"
+  },
+  "status": {
+    "scheduled": "مبرمج",
+    "completed": "مكتمل",
+    "cancelled": "ملغى"
+  }
+}
