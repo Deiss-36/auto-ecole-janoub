@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { Calendar, Clock, CreditCard, Award, User, TrendingUp } from 'lucide-react';
-import { ProgressBar } from 'react-bootstrap';
+
 
 const StatCard = ({ title, value, sub, icon: Icon, color }) => (
     <div className="col-12 col-md-6 col-xl-3 mb-4">

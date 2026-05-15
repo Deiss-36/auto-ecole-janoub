@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../../services/api';
 import { toast } from 'react-toastify';
 import { Users, Search, ChevronRight, GraduationCap } from 'lucide-react';
-import { ProgressBar } from 'react-bootstrap';
+
 
 const InstructorStudents = () => {
     const [candidates, setCandidates] = useState([]);

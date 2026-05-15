@@ -179,7 +179,7 @@ const Candidates = () => {
                     <h2 className="fw-bold mb-1">Gestion des Élèves</h2>
                     <p className="text-muted m-0">Inscrivez et suivez vos futurs conducteurs.</p>
                 </div>
-                {['admin','secretary'].includes(user?.role) && (
+                {user?.role === 'secretary' && (
                     <button className="btn btn-primary-custom d-flex align-items-center" onClick={openAddModal}>
                         <Plus size={20} className="me-2" /> Nouveau Candidat
                     </button>
