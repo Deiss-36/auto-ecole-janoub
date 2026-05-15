@@ -32,7 +32,7 @@ class ExpenseController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Dépense enregistrée.',
+            'message' => 'تم تسجيل المصروف.',
             'expense' => new ExpenseResource($expense),
         ], 201);
     }
@@ -55,7 +55,7 @@ class ExpenseController extends Controller
     public function destroy(Expense $expense)
     {
         $expense->delete();
-        return response()->json(['message' => 'Dépense supprimée.']);
+        return response()->json(['message' => 'تم حذف المصروف.']);
     }
 
     public function summary(Request $request)

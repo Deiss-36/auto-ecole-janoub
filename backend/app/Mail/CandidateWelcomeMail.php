@@ -35,7 +35,7 @@ class CandidateWelcomeMail extends Mailable
                 'userEmail'   => $this->user->email,
                 'password'    => $this->password,
                 'licenseType' => $this->licenseType,
-                'loginUrl'    => 'http://localhost:3000/login',
+                'loginUrl'    => config('app.frontend_url') . '/login',
             ],
         );
     }

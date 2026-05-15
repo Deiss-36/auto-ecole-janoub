@@ -54,7 +54,7 @@ class InstructorController extends Controller
             DB::commit();
 
             return response()->json([
-                'message'    => 'Instructeur créé avec succès.',
+                'message'    => 'تم إنشاء المدرب بنجاح.',
                 'instructor' => new InstructorResource($instructor->load('user')),
             ], 201);
         } catch (\Exception $e) {
@@ -83,7 +83,7 @@ class InstructorController extends Controller
         $instructor->update(array_diff_key($validated, array_flip(['name', 'email'])));
 
         return response()->json([
-            'message'    => 'Instructeur mis à jour.',
+            'message'    => 'تم تحديث المدرب.',
             'instructor' => new InstructorResource($instructor->load('user')),
         ]);
     }
@@ -91,7 +91,7 @@ class InstructorController extends Controller
     public function destroy(Instructor $instructor)
     {
         $instructor->user->delete();
-        return response()->json(['message' => 'Instructeur supprimé.']);
+        return response()->json(['message' => 'تم حذف المدرب.']);
     }
 
     public function schedule(Request $request, Instructor $instructor)

@@ -64,7 +64,7 @@ class CandidateController extends Controller
             DB::commit();
 
             return response()->json([
-                'message'   => 'Candidat créé avec succès.',
+                'message'   => 'تم إنشاء المرشح بنجاح.',
                 'candidate' => new CandidateResource($candidate->load('user')),
             ], 201);
         } catch (\Exception $e) {
@@ -75,7 +75,7 @@ class CandidateController extends Controller
 
     public function show(Candidate $candidate)
     {
-        $candidate->load(['user', 'payments', 'appointments.instructor.user', 'skills']);
+        $candidate->load(['user', 'payments', 'appointments.instructor.user', 'skills', 'documents']);
         return new CandidateResource($candidate);
     }
 
@@ -101,7 +101,7 @@ class CandidateController extends Controller
         $candidate->update(array_diff_key($validated, array_flip(['name', 'email'])));
 
         return response()->json([
-            'message'   => 'Candidat mis à jour.',
+            'message'   => 'تم تحديث المرشح.',
             'candidate' => new CandidateResource($candidate->load('user')),
         ]);
     }
@@ -109,7 +109,7 @@ class CandidateController extends Controller
     public function destroy(Candidate $candidate)
     {
         $candidate->user->delete();
-        return response()->json(['message' => 'Candidat supprimé.']);
+        return response()->json(['message' => 'تم حذف المرشح.']);
     }
 
     public function stats()
@@ -134,7 +134,7 @@ class CandidateController extends Controller
             \Illuminate\Support\Facades\Mail::to($candidate->user->email)
                 ->send(new \App\Mail\CandidateReminderMail($candidate, $request->message));
                 
-            return response()->json(['message' => 'Rappel envoyé avec succès.']);
+            return response()->json(['message' => 'تم إرسال التذكير بنجاح.']);
         } catch (\Exception $e) {
             \Log::error('Erreur envoi rappel: ' . $e->getMessage());
             return response()->json(['message' => 'Erreur lors de l\'envoi de l\'email.'], 500);

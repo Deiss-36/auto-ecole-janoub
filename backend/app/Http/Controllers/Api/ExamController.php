@@ -36,7 +36,7 @@ class ExamController extends Controller
         $exam = \App\Models\Exam::create($validated);
 
         return response()->json([
-            'message' => 'Examen enregistré.',
+            'message' => 'تم تسجيل الامتحان.',
             'exam'    => $exam->load('candidate.user'),
         ], 201);
     }
@@ -55,7 +55,7 @@ class ExamController extends Controller
         $exam->update($validated);
 
         return response()->json([
-            'message' => 'Examen mis à jour.',
+            'message' => 'تم تحديث الامتحان.',
             'exam'    => $exam->load('candidate.user'),
         ]);
     }
@@ -63,7 +63,7 @@ class ExamController extends Controller
     public function destroy(\App\Models\Exam $exam)
     {
         $exam->delete();
-        return response()->json(['message' => 'Examen supprimé.']);
+        return response()->json(['message' => 'تم حذف الامتحان.']);
     }
 
 }

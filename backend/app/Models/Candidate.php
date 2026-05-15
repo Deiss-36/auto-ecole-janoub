@@ -45,6 +45,11 @@ class Candidate extends Model
         return $this->hasMany(CandidateSkill::class);
     }
 
+    public function documents()
+    {
+        return $this->hasMany(CandidateDocument::class);
+    }
+
     // ─── Helpers ─────────────────────────────────────────
     public function totalPaid(): float
     {

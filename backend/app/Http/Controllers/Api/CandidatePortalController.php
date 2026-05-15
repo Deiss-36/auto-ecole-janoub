@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\Candidate;
 use App\Models\Exam;
-use App\Models\Payment;
+use App\Models\CandidateDocument;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\AppointmentResource;
 use App\Http\Resources\CandidateResource;
 
@@ -32,12 +34,12 @@ class CandidatePortalController extends Controller
 
         // Mapping steps logic (Step 1-6)
         $steps = [
-            ['id' => 1, 'title' => 'Inscription et dossier', 'status' => 'completed', 'date' => $candidate->registration_date->format('d/m/Y')],
-            ['id' => 2, 'title' => 'Formation code', 'status' => $codeHours >= 20 ? 'completed' : 'active', 'progress' => $codeHours . 'h/20h'],
-            ['id' => 3, 'title' => 'Examen code', 'status' => Exam::where('candidate_id', $candidate->id)->where('type', 'code')->where('result', 'passed')->exists() ? 'completed' : 'pending'],
-            ['id' => 4, 'title' => 'Formation conduite', 'status' => $sessionsCount >= 30 ? 'completed' : 'pending', 'progress' => $sessionsCount . 'h/30h'],
-            ['id' => 5, 'title' => 'Examen conduite', 'status' => Exam::where('candidate_id', $candidate->id)->where('type', 'driving')->exists() ? 'active' : 'pending'],
-            ['id' => 6, 'title' => 'Obtention du permis', 'status' => Exam::where('candidate_id', $candidate->id)->where('type', 'driving')->where('result', 'passed')->exists() ? 'completed' : 'pending'],
+            ['id' => 1, 'title' => 'التسجيل والملف', 'status' => 'completed', 'date' => $candidate->registration_date->format('d/m/Y')],
+            ['id' => 2, 'title' => 'تكوين الكود', 'status' => $codeHours >= 20 ? 'completed' : 'active', 'progress' => $codeHours . 'س/20س'],
+            ['id' => 3, 'title' => 'امتحان الكود', 'status' => Exam::where('candidate_id', $candidate->id)->where('type', 'code')->where('result', 'passed')->exists() ? 'completed' : 'pending'],
+            ['id' => 4, 'title' => 'تكوين السياقة', 'status' => $sessionsCount >= 30 ? 'completed' : 'pending', 'progress' => $sessionsCount . 'س/30س'],
+            ['id' => 5, 'title' => 'امتحان السياقة', 'status' => Exam::where('candidate_id', $candidate->id)->where('type', 'driving')->exists() ? 'active' : 'pending'],
+            ['id' => 6, 'title' => 'الحصول على الرخصة', 'status' => Exam::where('candidate_id', $candidate->id)->where('type', 'driving')->where('result', 'passed')->exists() ? 'completed' : 'pending'],
         ];
 
         return response()->json([
@@ -47,7 +49,7 @@ class CandidatePortalController extends Controller
                 'sessions_done' => $sessionsCount,
                 'code_hours' => $codeHours,
                 'remaining_balance' => $remainingBalance,
-                'next_exam_date' => $nextExam ? $nextExam->date->format('d M') : 'Non planifié',
+                'next_exam_date' => $nextExam ? $nextExam->date->format('d M') : 'غير مبرمج',
             ],
             'steps' => $steps,
             'next_sessions' => AppointmentResource::collection(
@@ -88,16 +90,47 @@ class CandidatePortalController extends Controller
     public function documents(Request $request)
     {
         $candidate = $this->getCandidate($request);
-        $docs = DB::table('candidate_documents')->where('candidate_id', $candidate->id)->get();
+        return response()->json($candidate->documents()->latest()->get());
+    }
 
-        return response()->json($docs);
+    public function uploadDocument(Request $request)
+    {
+        $candidate = $this->getCandidate($request);
+
+        $request->validate([
+            'document_type' => 'required|string|in:cin,photo,medical_cert,payment_receipt,exam_cert',
+            'file'          => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+        ]);
+
+        $path = $request->file('file')->store('candidate_documents/' . $candidate->id, 'public');
+
+        $doc = $candidate->documents()->create([
+            'document_type' => $request->document_type,
+            'file_path'     => $path,
+            'status'        => 'pending',
+            'upload_date'   => now(),
+        ]);
+
+        return response()->json([
+            'message'  => 'تم رفع الوثيقة بنجاح. في انتظار المصادقة.',
+            'document' => $doc
+        ]);
     }
 
     public function notifications(Request $request)
     {
-        return response()->json(
-            DB::table('notifications')->where('user_id', $request->user()->id)->latest()->get()
-        );
+        return response()->json($request->user()->notifications()->latest()->get());
+    }
+
+    public function markNotificationAsRead(Request $request, Notification $notification)
+    {
+        if ($notification->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $notification->update(['is_read' => true]);
+
+        return response()->json(['message' => 'تم تحديد التنبيه كمقروء.']);
     }
 
     public function exportSessions(Request $request)
@@ -117,7 +150,7 @@ class CandidatePortalController extends Controller
             "Expires"             => "0"
         ];
 
-        $columns = ['Date', 'Heure', 'Duree', 'Type', 'Moniteur', 'Vehicule', 'Statut'];
+        $columns = ['التاريخ', 'الوقت', 'المدة', 'النوع', 'المدرب', 'المركبة', 'الحالة'];
 
         $callback = function() use($appointments, $columns) {
             $file = fopen('php://output', 'w');
@@ -135,16 +168,16 @@ class CandidatePortalController extends Controller
                 }
 
                 $statusMap = [
-                    'scheduled' => 'Prévu',
-                    'completed' => 'Terminé',
-                    'cancelled' => 'Annulé'
+                    'scheduled' => 'مبرمج',
+                    'completed' => 'مكتمل',
+                    'cancelled' => 'ملغى'
                 ];
 
                 fputcsv($file, [
                     $appt->date->format('d/m/Y'),
                     $appt->start_time . ' - ' . $appt->end_time,
                     $duration,
-                    $appt->session_type === 'driving' ? 'Conduite' : 'Code',
+                    $appt->session_type === 'driving' ? 'سياقة' : 'كود',
                     $appt->instructor->user->name ?? '—',
                     $appt->vehicle ? ($appt->vehicle->brand . ' ' . $appt->vehicle->model) : '—',
                     $statusMap[$appt->status] ?? $appt->status

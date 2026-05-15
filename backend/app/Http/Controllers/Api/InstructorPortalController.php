@@ -74,13 +74,13 @@ class InstructorPortalController extends Controller
                 $candidateName .= ' (+' . ($appt->candidates->count() - 1) . ')';
             }
             $statusMap = [
-                'completed' => ['type' => 'validated', 'title' => 'Séance terminée',  'color' => 'success'],
-                'cancelled' => ['type' => 'cancelled', 'title' => 'Séance annulée',   'color' => 'danger'],
-                'scheduled' => ['type' => 'scheduled', 'title' => 'Séance planifiée', 'color' => 'info'],
+                'completed' => ['type' => 'validated', 'title' => 'حصة مكتملة',  'color' => 'success'],
+                'cancelled' => ['type' => 'cancelled', 'title' => 'حصة ملغاة',   'color' => 'danger'],
+                'scheduled' => ['type' => 'scheduled', 'title' => 'حصة مبرمجة', 'color' => 'info'],
             ];
             $entry = $statusMap[$appt->status] ?? ['type' => 'info', 'title' => 'Séance', 'color' => 'secondary'];
             $date  = Carbon::parse($appt->date)->isToday()
-                ? 'Aujourd\'hui à ' . substr($appt->start_time, 0, 5)
+                ? 'اليوم عند ' . substr($appt->start_time, 0, 5)
                 : Carbon::parse($appt->date)->diffForHumans();
             return [
                 'type'  => $entry['type'],
@@ -159,7 +159,7 @@ class InstructorPortalController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Rapport de séance enregistré.',
+            'message' => 'تم تسجيل تقرير الحصة.',
             'appointment' => new AppointmentResource($appointment->load('candidates.user'))
         ]);
     }
@@ -209,6 +209,40 @@ class InstructorPortalController extends Controller
 
         $instructor->update(['phone' => $request->phone]);
 
-        return response()->json(['message' => 'Profil mis à jour !']);
+        return response()->json(['message' => 'تم تحديث الملف الشخصي !']);
+    }
+
+    public function storeReport(Request $request)
+    {
+        $instructor = $this->getInstructor($request);
+
+        $request->validate([
+            'candidate_id'  => 'required|exists:candidates,id',
+            'session_type'  => 'required|in:code,driving',
+            'date'          => 'required|date',
+            'driving_level' => 'nullable|string',
+            'notes'         => 'nullable|string',
+        ]);
+
+        $candidate = Candidate::findOrFail($request->candidate_id);
+
+        $appointment = Appointment::create([
+            'instructor_id' => $instructor->id,
+            'license_type'  => $candidate->license_type,
+            'session_type'  => $request->session_type,
+            'date'          => $request->date,
+            'start_time'    => now()->format('H:i:s'),
+            'end_time'      => now()->addHour()->format('H:i:s'),
+            'status'        => 'completed',
+            'notes'         => $request->notes,
+            'driving_level' => $request->driving_level,
+        ]);
+
+        $appointment->candidates()->sync([$request->candidate_id]);
+
+        return response()->json([
+            'message' => 'تم تسجيل التقرير بنجاح.',
+            'appointment' => new AppointmentResource($appointment->load('candidates.user'))
+        ]);
     }
 }

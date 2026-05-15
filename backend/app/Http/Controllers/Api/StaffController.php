@@ -40,7 +40,7 @@ class StaffController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Membre du personnel ajouté avec succès.',
+            'message' => 'تمت إضافة الموظف بنجاح.',
             'user'    => new \App\Http\Resources\UserResource($user),
         ], 201);
     }
@@ -79,7 +79,7 @@ class StaffController extends Controller
         }
 
         $staff->delete();
-        return response()->json(['message' => 'Compte supprimé.']);
+        return response()->json(['message' => 'تم حذف الحساب.']);
     }
 
 }

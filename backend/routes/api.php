@@ -118,6 +118,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('appointment/{appointment}', [InstructorPortalController::class, 'updateAppointment']);
         Route::get('profile', [InstructorPortalController::class, 'profile']);
         Route::post('profile/update', [InstructorPortalController::class, 'updateProfile']);
+        Route::post('reports/store', [InstructorPortalController::class, 'storeReport']);
     });
 
     // 🎓 Portail Candidat (Candidate Portal)
@@ -127,6 +128,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('sessions/export', [CandidatePortalController::class, 'exportSessions']);
         Route::get('payments', [CandidatePortalController::class, 'payments']);
         Route::get('documents', [CandidatePortalController::class, 'documents']);
+        Route::post('documents/upload', [CandidatePortalController::class, 'uploadDocument']);
         Route::get('notifications', [CandidatePortalController::class, 'notifications']);
+        Route::put('notifications/{notification}/read', [CandidatePortalController::class, 'markNotificationAsRead']);
     });
 });

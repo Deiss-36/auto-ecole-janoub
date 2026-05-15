@@ -45,7 +45,7 @@ const Login = () => {
                         </div>
                     </div>
                     <h2 className="fw-bold mb-0" style={{ color: 'var(--primary-color)', letterSpacing: '2px' }}>Auto École Janoub</h2>
-                    <p className="opacity-50 fs-5 mb-5" style={{ fontFamily: 'Cairo' }}>سيارة تعليم الجنوب</p>
+                    <p className="opacity-50 fs-5 mb-5">Système de Gestion</p>
 
                     <div className="text-start d-inline-block">
                         <div className="d-flex align-items-center mb-4 transition-all hover-translate-x">

@@ -27,7 +27,7 @@ class VehicleController extends Controller
         $vehicle = Vehicle::create($request->validated());
 
         return response()->json([
-            'message' => 'Véhicule ajouté avec succès.',
+            'message' => 'تمت إضافة المركبة بنجاح.',
             'vehicle' => new VehicleResource($vehicle),
         ], 201);
     }
@@ -42,7 +42,7 @@ class VehicleController extends Controller
         $vehicle->update($request->validated());
 
         return response()->json([
-            'message' => 'Véhicule mis à jour.',
+            'message' => 'تم تحديث المركبة.',
             'vehicle' => new VehicleResource($vehicle),
         ]);
     }
@@ -50,6 +50,6 @@ class VehicleController extends Controller
     public function destroy(Vehicle $vehicle)
     {
         $vehicle->delete();
-        return response()->json(['message' => 'Véhicule supprimé.']);
+        return response()->json(['message' => 'تم حذف المركبة.']);
     }
 }

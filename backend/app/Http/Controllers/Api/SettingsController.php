@@ -28,7 +28,7 @@ class SettingsController extends Controller
             \App\Models\Setting::where('key', $item['key'])->update(['value' => $item['value']]);
         }
 
-        return response()->json(['message' => 'Paramètres mis à jour.', 'settings' => \App\Models\Setting::all()]);
+        return response()->json(['message' => 'تم تحديث الإعدادات.', 'settings' => \App\Models\Setting::all()]);
     }
 
 }

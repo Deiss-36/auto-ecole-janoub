@@ -56,7 +56,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Compte créé avec succès. Un email de bienvenue vous a été envoyé.',
+            'message' => 'تم إنشاء الحساب بنجاح. تم إرسال بريد إلكتروني ترحيبي إليك.',
             'user'    => new UserResource($user),
             'token'   => $token,
         ], 201);
@@ -68,14 +68,14 @@ class AuthController extends Controller
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['Email ou mot de passe incorrect.'],
+                'email' => ['البريد الإلكتروني أو كلمة المرور غير صحيحة.'],
             ]);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Connexion réussie.',
+            'message' => 'تم تسجيل الدخول بنجاح.',
             'user'    => new UserResource($user),
             'token'   => $token,
         ]);
@@ -85,7 +85,7 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Déconnexion réussie.']);
+        return response()->json(['message' => 'تم تسجيل الخروج بنجاح.']);
     }
 
     public function profile(Request $request)
@@ -106,7 +106,7 @@ class AuthController extends Controller
         $user->update($validated);
 
         return response()->json([
-            'message' => 'Profil mis à jour.',
+            'message' => 'تم تحديث الملف الشخصي.',
             'user'    => new UserResource($user),
         ]);
     }

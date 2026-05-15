@@ -32,7 +32,7 @@ class ReceiptController extends Controller
                 'payment_method'=> $payment->payment_method,
                 'notes'         => $payment->notes,
             ],
-            'message' => 'Reçu généré avec succès.',
+            'message' => 'تم إنشاء الوصل بنجاح.',
         ]);
     }
 }

@@ -22,14 +22,14 @@ class DatabaseSeeder extends Seeder
         // 1. Create Admins
         User::create([
             'name' => 'Admin Janoub',
-            'email' => 'admin@janoub.com',
+            'email' => 'admin@gmail.com',
             'password' => Hash::make('password'),
             'role' => 'admin',
         ]);
 
         User::create([
             'name' => 'Secretary Fatima',
-            'email' => 'fatima@janoub.com',
+            'email' => 'fatima@gmail.com',
             'password' => Hash::make('password'),
             'role' => 'secretary',
         ]);
@@ -50,97 +50,132 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 3. Create Instructors
-        $instructorUser = User::create([
+        $instructorUser1 = User::create([
             'name' => 'Ahmed El Mansouri',
-            'email' => 'ahmed@janoub.com',
+            'email' => 'ahmed@gmail.com',
             'password' => Hash::make('password'),
             'role' => 'instructor',
         ]);
 
-        $instructor = Instructor::create([
-            'user_id' => $instructorUser->id,
-            'specialty' => 'Permis B',
+        $instructor1 = Instructor::create([
+            'user_id' => $instructorUser1->id,
+            'specialty' => 'Permis B, EC',
             'salary' => 4500,
             'phone' => '0661223344',
             'hire_date' => now()->subYear(),
         ]);
 
-        // 4. Create Candidates
-        $candidateUser = User::create([
-            'name' => 'Driss Candidate',
-            'email' => 'driss@example.com',
+        $instructorUser2 = User::create([
+            'name' => 'Sara Bennani',
+            'email' => 'sara@gmail.com',
             'password' => Hash::make('password'),
-            'role' => 'candidate',
+            'role' => 'instructor',
         ]);
 
-        $candidate = Candidate::create([
-            'user_id' => $candidateUser->id,
-            'cin' => 'AB123456',
-            'phone' => '0677889900',
-            'license_type' => 'B',
-            'total_price' => 3000,
-            'registration_date' => now()->subMonth(),
-            'status' => 'active',
-            'rank' => 'Candidat de niveau intermédiaire',
+        $instructor2 = Instructor::create([
+            'user_id' => $instructorUser2->id,
+            'specialty' => 'Permis A, B',
+            'salary' => 4200,
+            'phone' => '0665443322',
+            'hire_date' => now()->subMonths(6),
         ]);
 
-        // 5. Create Skills for Candidate
-        CandidateSkill::create([
-            'candidate_id' => $candidate->id,
-            'skill_name' => 'Code de la Route',
-            'progress' => 85,
-        ]);
-        CandidateSkill::create([
-            'candidate_id' => $candidate->id,
-            'skill_name' => 'Stationnement/Créneau',
-            'progress' => 60,
-        ]);
-        CandidateSkill::create([
-            'candidate_id' => $candidate->id,
-            'skill_name' => 'Conduite en ville',
-            'progress' => 45,
-        ]);
+        // 4. Create Candidates
+        $candidatesData = [
+            ['name' => 'Driss Candidate', 'email' => 'driss@gmail.com', 'cin' => 'AB123456', 'type' => 'B', 'price' => 3000],
+            ['name' => 'Yassine Alami', 'email' => 'yassine@gmail.com', 'cin' => 'CD789012', 'type' => 'EC', 'price' => 5000],
+            ['name' => 'Meryem Tazi', 'email' => 'meryem@gmail.com', 'cin' => 'EF345678', 'type' => 'B', 'price' => 3000],
+            ['name' => 'Omar Idrisi', 'email' => 'omar@gmail.com', 'cin' => 'GH901234', 'type' => 'A', 'price' => 2000],
+            ['name' => 'Sofia Kadiri', 'email' => 'sofia@gmail.com', 'cin' => 'IJ567890', 'type' => 'B', 'price' => 3000],
+        ];
 
-        // 6. Create Payments
-        Payment::create([
-            'candidate_id' => $candidate->id,
-            'amount' => 1000,
-            'payment_date' => now()->subWeeks(2),
-            'payment_method' => 'cash',
-            'notes' => 'First installment',
-        ]);
+        $candidates = [];
+        foreach ($candidatesData as $data) {
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make('password'),
+                'role' => 'candidate',
+            ]);
 
-        Payment::create([
-            'candidate_id' => $candidate->id,
-            'amount' => 500,
-            'payment_date' => now()->subDays(3),
-            'payment_method' => 'cash',
-        ]);
+            $candidates[] = Candidate::create([
+                'user_id' => $user->id,
+                'cin' => $data['cin'],
+                'phone' => '06' . rand(10000000, 99999999),
+                'license_type' => $data['type'],
+                'total_price' => $data['price'],
+                'registration_date' => now()->subDays(rand(10, 60)),
+                'status' => 'active',
+                'rank' => 'Candidat de niveau ' . ['Débutant', 'Intermédiaire', 'Avancé'][rand(0, 2)],
+            ]);
+        }
 
-        // 7. Create Appointments (using pivot table for candidates)
+        // 5. Create Skills and Payments for some candidates
+        foreach ($candidates as $cand) {
+            CandidateSkill::create(['candidate_id' => $cand->id, 'skill_name' => 'Code de la Route', 'progress' => rand(40, 95)]);
+            CandidateSkill::create(['candidate_id' => $cand->id, 'skill_name' => 'Conduite Technique', 'progress' => rand(10, 60)]);
+            
+            Payment::create([
+                'candidate_id' => $cand->id,
+                'amount' => 1000,
+                'payment_date' => now()->subDays(5),
+                'payment_method' => 'cash',
+            ]);
+        }
+
+        // 7. Create Appointments (Today and Future)
+        $today = now()->toDateString();
+        
+        // Ahmed's sessions today
         $appt1 = Appointment::create([
-            'instructor_id' => $instructor->id,
+            'instructor_id' => $instructor1->id,
             'vehicle_id'    => $car1->id,
             'license_type'  => 'B',
-            'date'          => now()->toDateString(),
-            'start_time'    => '10:00:00',
-            'end_time'      => '11:00:00',
+            'date'          => $today,
+            'start_time'    => '09:00:00',
+            'end_time'      => '10:00:00',
             'status'        => 'completed',
             'session_price' => 150,
         ]);
-        $appt1->candidates()->sync([$candidate->id]);
+        $appt1->candidates()->sync([$candidates[0]->id]);
 
         $appt2 = Appointment::create([
-            'instructor_id' => $instructor->id,
+            'instructor_id' => $instructor1->id,
             'vehicle_id'    => $car1->id,
             'license_type'  => 'B',
-            'date'          => now()->addDays(2)->toDateString(),
-            'start_time'    => '14:00:00',
-            'end_time'      => '15:00:00',
+            'date'          => $today,
+            'start_time'    => '11:00:00',
+            'end_time'      => '12:00:00',
             'status'        => 'scheduled',
             'session_price' => 150,
         ]);
-        $appt2->candidates()->sync([$candidate->id]);
+        $appt2->candidates()->sync([$candidates[2]->id, $candidates[4]->id]); // Group session
+
+        // Sara's sessions today
+        $appt3 = Appointment::create([
+            'instructor_id' => $instructor2->id,
+            'vehicle_id'    => $car2->id,
+            'license_type'  => 'B',
+            'date'          => $today,
+            'start_time'    => '15:00:00',
+            'end_time'      => '16:00:00',
+            'status'        => 'scheduled',
+            'session_price' => 150,
+        ]);
+        $appt3->candidates()->sync([$candidates[3]->id]);
+
+        // Future session
+        $appt4 = Appointment::create([
+            'instructor_id' => $instructor1->id,
+            'vehicle_id'    => $car1->id,
+            'license_type'  => 'EC',
+            'date'          => now()->addDays(2)->toDateString(),
+            'start_time'    => '10:00:00',
+            'end_time'      => '12:00:00',
+            'status'        => 'scheduled',
+            'session_price' => 300,
+        ]);
+        $appt4->candidates()->sync([$candidates[1]->id]);
 
         // Call SettingsSeeder if exists
         if (class_exists('Database\Seeders\SettingsSeeder')) {

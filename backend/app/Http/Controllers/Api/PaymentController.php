@@ -33,7 +33,7 @@ class PaymentController extends Controller
         $payment = Payment::create($request->validated());
 
         return response()->json([
-            'message' => 'Paiement enregistré avec succès.',
+            'message' => 'تم تسجيل الأداء بنجاح.',
             'payment' => new PaymentResource($payment->load('candidate.user')),
             'balance' => $this->getBalance($payment->candidate_id),
         ], 201);
@@ -49,7 +49,7 @@ class PaymentController extends Controller
         $payment->update($request->validated());
 
         return response()->json([
-            'message' => 'Paiement mis à jour.',
+            'message' => 'تم تحديث الأداء.',
             'payment' => new PaymentResource($payment->load('candidate.user')),
             'balance' => $this->getBalance($payment->candidate_id),
         ]);
@@ -60,7 +60,7 @@ class PaymentController extends Controller
         $candidateId = $payment->candidate_id;
         $payment->delete();
         return response()->json([
-            'message' => 'Paiement supprimé.',
+            'message' => 'تم حذف الأداء.',
             'balance' => $this->getBalance($candidateId),
         ]);
     }

@@ -59,7 +59,7 @@ class AppointmentController extends Controller
         }
 
         return response()->json([
-            'message'     => 'Rendez-vous créé avec succès.',
+            'message'     => 'تم إنشاء الموعد بنجاح.',
             'appointment' => new AppointmentResource($appointment->load(['instructor.user', 'candidates.user', 'vehicle'])),
         ], 201);
     }
@@ -79,7 +79,7 @@ class AppointmentController extends Controller
         }
 
         return response()->json([
-            'message'     => 'Rendez-vous mis à jour.',
+            'message'     => 'تم تحديث الموعد.',
             'appointment' => new AppointmentResource($appointment->load(['instructor.user', 'candidates.user', 'vehicle'])),
         ]);
     }
@@ -87,7 +87,7 @@ class AppointmentController extends Controller
     public function destroy(Appointment $appointment)
     {
         $appointment->delete();
-        return response()->json(['message' => 'Rendez-vous supprimé.']);
+        return response()->json(['message' => 'تم حذف الموعد.']);
     }
 
     public function calendar(Request $request)
