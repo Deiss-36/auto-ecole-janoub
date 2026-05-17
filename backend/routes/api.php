@@ -14,14 +14,12 @@ use App\Http\Controllers\Api\ReceiptController;
 use App\Http\Controllers\Api\RegistrationController;
 use Illuminate\Support\Facades\Route;
 
-
-
 /*
 |----------------------------------------------------------------------
-|  Public Routes — No authentication required
+|  Public Routes — No authentication required (With Rate Limiting)
 |----------------------------------------------------------------------
 */
-Route::prefix('auth')->group(function () {
+Route::prefix('auth')->middleware('throttle:5,1')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login',    [AuthController::class, 'login']);
 });
@@ -83,6 +81,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/expenses/summary', [ExpenseController::class, 'summary']);
         Route::apiResource('/expenses', ExpenseController::class);
     });
+    
     // ── Staff Management (admin only) ──────────────────────────
     Route::middleware('role:admin')->group(function () {
         Route::apiResource('/staff', \App\Http\Controllers\Api\StaffController::class);
@@ -95,7 +94,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ── Settings ───────────────────────────────────────────────
     Route::middleware('role:admin')->group(function () {
-        // use strings to avoid issues if settings controllers doesn't exist yet in some environments
         Route::get('/settings',        [\App\Http\Controllers\Api\SettingsController::class, 'index']);
         Route::post('/settings/update', [\App\Http\Controllers\Api\SettingsController::class, 'update']);
     });

@@ -28,8 +28,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::create([
-            'name' => 'Secretary Fatima',
-            'email' => 'fatima@gmail.com',
+            'name' => 'Youssef',
+            'email' => 'youssef@gmail.com',
             'password' => Hash::make('password'),
             'role' => 'secretary',
         ]);

@@ -15,7 +15,6 @@ class CandidateWelcomeMail extends Mailable
 
     public function __construct(
         public readonly User   $user,
-        public readonly string $password,
         public readonly string $licenseType
     ) {}
 
@@ -33,7 +32,6 @@ class CandidateWelcomeMail extends Mailable
             with: [
                 'userName'    => $this->user->name,
                 'userEmail'   => $this->user->email,
-                'password'    => $this->password,
                 'licenseType' => $this->licenseType,
                 'loginUrl'    => config('app.frontend_url') . '/login',
             ],

@@ -16,8 +16,6 @@ class RegisterRequest extends FormRequest
             'name'         => ['required', 'string', 'max:255'],
             'email'        => ['required', 'email', 'unique:users,email'],
             'password'     => ['required', 'string', 'min:8', 'confirmed'],
-            // 🔒 Inscription publique réservée aux candidats uniquement.
-            'role'         => ['sometimes', 'in:candidate'],
             // Informations candidat
             'license_type' => ['required', 'in:A,B,C,D,EC'],
             'phone'        => ['nullable', 'string', 'max:20'],

@@ -38,17 +38,18 @@ class AppointmentController extends Controller
     {
         $validated = $request->validated();
 
+        // 🔒 Complete Interval Intersection Algorithm: (new.start < existing.end AND new.end > existing.start)
         $conflict = Appointment::where('instructor_id', $validated['instructor_id'])
             ->where('date', $validated['date'])
             ->where('status', 'scheduled')
-            ->where(fn($q) =>
-                $q->whereBetween('start_time', [$validated['start_time'], $validated['end_time']])
-                  ->orWhereBetween('end_time',   [$validated['start_time'], $validated['end_time']])
-            )->exists();
+            ->where(function($q) use ($validated) {
+                $q->where('start_time', '<', $validated['end_time'])
+                  ->where('end_time', '>', $validated['start_time']);
+            })->exists();
 
         if ($conflict) {
             return response()->json([
-                'message' => 'Conflit d\'horaire détecté pour cet instructeur.',
+                'message' => __('messages.appointment_conflict'),
             ], 422);
         }
 
@@ -59,7 +60,7 @@ class AppointmentController extends Controller
         }
 
         return response()->json([
-            'message'     => 'تم إنشاء الموعد بنجاح.',
+            'message'     => __('messages.appointment_created'),
             'appointment' => new AppointmentResource($appointment->load(['instructor.user', 'candidates.user', 'vehicle'])),
         ], 201);
     }
@@ -72,6 +73,28 @@ class AppointmentController extends Controller
     public function update(UpdateAppointmentRequest $request, Appointment $appointment)
     {
         $validated = $request->validated();
+
+        $instructorId = $validated['instructor_id'] ?? $appointment->instructor_id;
+        $date         = $validated['date']          ?? $appointment->date;
+        $startTime    = $validated['start_time']    ?? $appointment->start_time;
+        $endTime      = $validated['end_time']      ?? $appointment->end_time;
+
+        // 🔒 Complete Interval Intersection Algorithm for Update
+        $conflict = Appointment::where('instructor_id', $instructorId)
+            ->where('id', '!=', $appointment->id)
+            ->where('date', $date)
+            ->where('status', 'scheduled')
+            ->where(function($q) use ($startTime, $endTime) {
+                $q->where('start_time', '<', $endTime)
+                  ->where('end_time', '>', $startTime);
+            })->exists();
+
+        if ($conflict) {
+            return response()->json([
+                'message' => __('messages.appointment_conflict'),
+            ], 422);
+        }
+
         $appointment->update(array_diff_key($validated, array_flip(['candidate_ids'])));
 
         if (isset($validated['candidate_ids'])) {
@@ -79,7 +102,7 @@ class AppointmentController extends Controller
         }
 
         return response()->json([
-            'message'     => 'تم تحديث الموعد.',
+            'message'     => __('messages.appointment_updated'),
             'appointment' => new AppointmentResource($appointment->load(['instructor.user', 'candidates.user', 'vehicle'])),
         ]);
     }
@@ -87,7 +110,7 @@ class AppointmentController extends Controller
     public function destroy(Appointment $appointment)
     {
         $appointment->delete();
-        return response()->json(['message' => 'تم حذف الموعد.']);
+        return response()->json(['message' => __('messages.appointment_deleted')]);
     }
 
     public function calendar(Request $request)

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// Configure Axios with Sanctum support
+// Configure Axios with Sanctum support using environment API url config
 const api = axios.create({
     baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000/api',
     withCredentials: true,
@@ -9,13 +9,6 @@ const api = axios.create({
         'Content-Type': 'application/json'
     }
 });
-
-// Helper to pull CSRF token since Sanctum needs it
-export const initCsrf = () => {
-    return axios.get('http://localhost:8000/sanctum/csrf-cookie', {
-        withCredentials: true
-    });
-};
 
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('auth_token');

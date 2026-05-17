@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
@@ -43,20 +44,22 @@ class AuthController extends Controller
             'status'            => 'active',
         ]);
 
-        // 3. Send welcome email (synchronous - no queue worker needed)
+        // 3. Send welcome email (without plain password)
         try {
             Mail::to($user->email)
-                ->send(new CandidateWelcomeMail($user, $plainPassword, $validated['license_type']));
+                ->send(new CandidateWelcomeMail($user, $validated['license_type']));
+                
+            // Send secure reset link via Laravel Password broker
+            Password::broker()->sendResetLink(['email' => $user->email]);
         } catch (\Exception $e) {
-            // Email failure should not block registration
-            \Log::warning('Welcome email failed for ' . $user->email . ': ' . $e->getMessage());
+            \Log::warning('Welcome/Reset email failed for ' . $user->email . ': ' . $e->getMessage());
         }
 
         // 4. Generate token
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'message' => 'تم إنشاء الحساب بنجاح. تم إرسال بريد إلكتروني ترحيبي إليك.',
+            'message' => __('messages.register_success'),
             'user'    => new UserResource($user),
             'token'   => $token,
         ], 201);
@@ -68,14 +71,14 @@ class AuthController extends Controller
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['البريد الإلكتروني أو كلمة المرور غير صحيحة.'],
+                'email' => [__('messages.login_failed')],
             ]);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'message' => 'تم تسجيل الدخول بنجاح.',
+            'message' => __('messages.login_success'),
             'user'    => new UserResource($user),
             'token'   => $token,
         ]);
@@ -85,7 +88,7 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'تم تسجيل الخروج بنجاح.']);
+        return response()->json(['message' => __('messages.logout_success')]);
     }
 
     public function profile(Request $request)
@@ -106,9 +109,8 @@ class AuthController extends Controller
         $user->update($validated);
 
         return response()->json([
-            'message' => 'تم تحديث الملف الشخصي.',
+            'message' => __('messages.profile_updated'),
             'user'    => new UserResource($user),
         ]);
     }
 }
-

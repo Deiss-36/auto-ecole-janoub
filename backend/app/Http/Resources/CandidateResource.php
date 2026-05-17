@@ -8,6 +8,10 @@ class CandidateResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        // ⚡ Performance: Fetch the sum directly from payments_sum_amount eager loaded field.
+        // Fall back to relation sum or helper method only if not calculated at query level.
+        $totalPaid = (float) ($this->payments_sum_amount ?? ($this->relationLoaded('payments') ? $this->payments->sum('amount') : $this->totalPaid()));
+
         return [
             'id'                => $this->id,
             'cin'               => $this->cin,
@@ -22,16 +26,16 @@ class CandidateResource extends JsonResource
             'status'            => $this->status,
             'folder_status'     => $this->folder_status,
             'photo_path'        => $this->photo_path ? asset('storage/' . $this->photo_path) : null,
+            
             // Computed details
-
-            'total_paid'        => (float) $this->totalPaid(),
-            'remaining_balance' => (float) $this->remainingBalance(),
+            'total_paid'        => $totalPaid,
+            'remaining_balance' => (float) $this->total_price - $totalPaid,
 
             // Relationships
             'user'              => new UserResource($this->whenLoaded('user')),
             'payments'          => PaymentResource::collection($this->whenLoaded('payments')),
             'appointments'      => AppointmentResource::collection($this->whenLoaded('appointments')),
-            'skills'            => $this->whenLoaded('skills'), // Alternatively Map to SkillResource
+            'skills'            => $this->whenLoaded('skills'),
         ];
     }
 }

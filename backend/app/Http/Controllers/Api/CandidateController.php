@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use App\Http\Requests\Candidate\StoreCandidateRequest;
 use App\Http\Requests\Candidate\UpdateCandidateRequest;
 use App\Http\Resources\CandidateResource;
@@ -16,7 +17,9 @@ class CandidateController extends Controller
 {
     public function index(Request $request)
     {
+        // ⚡ Performance optimization: withSum('payments', 'amount') to avoid N+1 query per candidate
         $candidates = Candidate::with('user')
+            ->withSum('payments', 'amount')
             ->when($request->status,       fn($q) => $q->where('status', $request->status))
             ->when($request->license_type, fn($q) => $q->where('license_type', $request->license_type))
             ->when($request->search,       fn($q) => $q->whereHas('user', fn($u) =>
@@ -64,12 +67,20 @@ class CandidateController extends Controller
             DB::commit();
 
             return response()->json([
-                'message'   => 'تم إنشاء المرشح بنجاح.',
+                'message'   => __('messages.candidate_created'),
                 'candidate' => new CandidateResource($candidate->load('user')),
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['message' => 'Erreur: ' . $e->getMessage()], 500);
+            // 🔒 Log actual error securely on the server and return a safe localized Arabic generic message
+            Log::error('Candidate registration failed: ' . $e->getMessage(), [
+                'exception' => $e,
+                'request'   => $request->except(['password', 'password_confirmation'])
+            ]);
+
+            return response()->json([
+                'message' => __('messages.candidate_error'),
+            ], 500);
         }
     }
 
@@ -101,7 +112,7 @@ class CandidateController extends Controller
         $candidate->update(array_diff_key($validated, array_flip(['name', 'email'])));
 
         return response()->json([
-            'message'   => 'تم تحديث المرشح.',
+            'message'   => __('messages.candidate_updated'),
             'candidate' => new CandidateResource($candidate->load('user')),
         ]);
     }
@@ -109,7 +120,7 @@ class CandidateController extends Controller
     public function destroy(Candidate $candidate)
     {
         $candidate->user->delete();
-        return response()->json(['message' => 'تم حذف المرشح.']);
+        return response()->json(['message' => __('messages.candidate_deleted')]);
     }
 
     public function stats()
@@ -134,10 +145,10 @@ class CandidateController extends Controller
             \Illuminate\Support\Facades\Mail::to($candidate->user->email)
                 ->send(new \App\Mail\CandidateReminderMail($candidate, $request->message));
                 
-            return response()->json(['message' => 'تم إرسال التذكير بنجاح.']);
+            return response()->json(['message' => __('messages.reminder_sent')]);
         } catch (\Exception $e) {
-            \Log::error('Erreur envoi rappel: ' . $e->getMessage());
-            return response()->json(['message' => 'Erreur lors de l\'envoi de l\'email.'], 500);
+            Log::error('Reminder email failed: ' . $e->getMessage());
+            return response()->json(['message' => __('messages.reminder_failed')], 500);
         }
     }
 }

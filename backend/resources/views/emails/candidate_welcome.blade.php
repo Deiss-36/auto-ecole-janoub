@@ -71,13 +71,7 @@
                     <div class="cred-value">{{ $userEmail }}</div>
                 </div>
             </div>
-            <div class="cred-row">
-                <div class="cred-icon">🔑</div>
-                <div>
-                    <div class="cred-label">Mot de passe temporaire</div>
-                    <div class="cred-value">{{ $password }}</div>
-                </div>
-            </div>
+
         </div>
 
         <!-- CTA -->

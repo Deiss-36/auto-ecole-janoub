@@ -24,14 +24,22 @@ class RoleMiddleware
         // Must be authenticated first
         if (!$user) {
             return response()->json([
-                'message' => 'Non authentifié. Veuillez vous connecter.',
+                'message' => __('messages.unauthenticated'),
             ], 401);
         }
 
         // Check if user's role is in the allowed list
         if (!in_array($user->role, $roles)) {
+            // 🔒 Production mode: return clean generic message without details
+            if (config('app.env') === 'production' || !config('app.debug')) {
+                return response()->json([
+                    'message' => __('messages.access_denied'),
+                ], 403);
+            }
+
+            // Debug mode: include detailed routing role debug keys
             return response()->json([
-                'message' => 'Accès refusé. Vous n\'avez pas les droits requis.',
+                'message'        => __('messages.access_denied_with_roles'),
                 'required_roles' => $roles,
                 'your_role'      => $user->role,
             ], 403);

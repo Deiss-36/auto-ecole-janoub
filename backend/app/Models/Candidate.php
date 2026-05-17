@@ -53,6 +53,9 @@ class Candidate extends Model
     // ─── Helpers ─────────────────────────────────────────
     public function totalPaid(): float
     {
+        if ($this->relationLoaded('payments')) {
+            return (float) $this->payments->sum('amount');
+        }
         return (float) $this->payments()->sum('amount');
     }
 

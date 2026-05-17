@@ -33,10 +33,7 @@ class DashboardController extends Controller
             'total_month' => Payment::whereMonth('payment_date', $month)
                                     ->whereYear('payment_date', $year)->sum('amount'),
             'total_year'  => Payment::whereYear('payment_date', $year)->sum('amount'),
-            'outstanding' => DB::table('candidates')
-                              ->join('payments', 'candidates.id', '=', 'payments.candidate_id', 'left')
-                              ->select(DB::raw('SUM(candidates.total_price) - IFNULL(SUM(payments.amount),0) as remaining'))
-                              ->value('remaining') ?? 0,
+            'outstanding' => (float) Candidate::sum('total_price') - (float) Payment::sum('amount'),
         ];
 
         // ── Appointments ───────────────────────────────

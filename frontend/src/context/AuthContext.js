@@ -24,8 +24,6 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (email, password) => {
-        // CSRF disabled because we use direct API tokens
-        // await initCsrf();
         const res = await api.post('/auth/login', { email, password });
         localStorage.setItem('auth_token', res.data.token);
         // Backend returns Resource, adjust to payload
