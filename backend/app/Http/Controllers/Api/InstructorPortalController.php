@@ -74,14 +74,14 @@ class InstructorPortalController extends Controller
                 $candidateName .= ' (+' . ($appt->candidates->count() - 1) . ')';
             }
             $statusMap = [
-                'completed' => ['type' => 'validated', 'title' => 'حصة مكتملة',  'color' => 'success'],
-                'cancelled' => ['type' => 'cancelled', 'title' => 'حصة ملغاة',   'color' => 'danger'],
-                'scheduled' => ['type' => 'scheduled', 'title' => 'حصة مبرمجة', 'color' => 'info'],
+                'completed' => ['type' => 'validated', 'title' => 'Séance terminée',  'color' => 'success'],
+                'cancelled' => ['type' => 'cancelled', 'title' => 'Séance annulée',   'color' => 'danger'],
+                'scheduled' => ['type' => 'scheduled', 'title' => 'Séance programmée', 'color' => 'info'],
             ];
             $entry = $statusMap[$appt->status] ?? ['type' => 'info', 'title' => 'Séance', 'color' => 'secondary'];
             $date  = Carbon::parse($appt->date)->isToday()
-                ? 'اليوم عند ' . substr($appt->start_time, 0, 5)
-                : Carbon::parse($appt->date)->diffForHumans();
+                ? "Aujourd'hui à " . substr($appt->start_time, 0, 5)
+                : Carbon::parse($appt->date)->locale('fr')->diffForHumans();
             return [
                 'type'  => $entry['type'],
                 'title' => $entry['title'],
@@ -159,7 +159,7 @@ class InstructorPortalController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'تم تسجيل تقرير الحصة.',
+            'message' => 'Rapport de séance enregistré avec succès.',
             'appointment' => new AppointmentResource($appointment->load('candidates.user'))
         ]);
     }
@@ -209,7 +209,7 @@ class InstructorPortalController extends Controller
 
         $instructor->update(['phone' => $request->phone]);
 
-        return response()->json(['message' => 'تم تحديث الملف الشخصي !']);
+        return response()->json(['message' => 'Profil mis à jour avec succès !']);
     }
 
     public function storeReport(Request $request)
@@ -241,7 +241,7 @@ class InstructorPortalController extends Controller
         $appointment->candidates()->sync([$request->candidate_id]);
 
         return response()->json([
-            'message' => 'تم تسجيل التقرير بنجاح.',
+            'message' => 'Rapport enregistré avec succès.',
             'appointment' => new AppointmentResource($appointment->load('candidates.user'))
         ]);
     }
