@@ -52,7 +52,7 @@ const Login = () => {
                             <div className="bg-warning bg-opacity-10 p-2 rounded-circle me-3 border border-warning border-opacity-10"><MapPin size={20} className="text-warning" /></div>
                             <div>
                                 <small className="d-block opacity-50 fw-bold uppercase" style={{fontSize: '0.65rem'}}>ADRESSE</small>
-                                <span className="fw-bold">Marrakech, Maroc</span>
+                                <span className="fw-bold">Safi, Maroc</span>
                             </div>
                         </div>
                         <div className="d-flex align-items-center mb-4 transition-all hover-translate-x">
